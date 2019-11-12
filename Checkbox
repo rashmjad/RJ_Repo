@@ -54,25 +54,25 @@
     </thead>
     <tbody>
     <tr>
-        <td><input type="checkbox" id="employeeIdsToDelete" name="employeeIdsToDelete" /></td>
+        <td><input type="checkbox" id="employeeIdsToDelete1" name="employeeIdsToDelete" /></td>
         <td>abc</td>
         <td>Male</td>
         <td>abc@live.com</td>
     </tr>
     <tr>
-        <td><input type="checkbox" id="employeeIdsToDelete" name="employeeIdsToDelete" /></td>
+        <td><input type="checkbox" id="employeeIdsToDelete2" name="employeeIdsToDelete" /></td>
         <td>xyz</td>
         <td>Female</td>
         <td>xyz@live.com</td>
     </tr>
     <tr>
-        <td><input type="checkbox" id="employeeIdsToDelete" name="employeeIdsToDelete" /></td>
+        <td><input type="checkbox" id="employeeIdsToDelete3" name="employeeIdsToDelete" /></td>
         <td>lmn</td>
         <td>Female</td>
         <td>lmn@live.com</td>
     </tr>
     <tr>
-        <td><input type="checkbox" id="employeeIdsToDelete" name="employeeIdsToDelete" /></td>
+        <td><input type="checkbox" id="employeeIdsToDelete4" name="employeeIdsToDelete" /></td>
         <td>ppor</td>
         <td>Male</td>
         <td>pqr@live.com</td>
