@@ -1,0 +1,330 @@
+<%@ Page Title="" Language="C#" MasterPageFile="~/RTS/RTS.Master" AutoEventWireup="true"
+    CodeBehind="RtsActualFileUpload.aspx.cs" Inherits="BIUniverse.RTS.WebForm2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function validationAlert() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Please select Date',
+                type: 'warning',
+                customClass: 'swal-wide'
+            });
+        }
+        function validate() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Please fill in all fields',
+                type: 'warning',
+                customClass: 'swal-wide'
+            });
+        }
+        function validateComments() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Provide Comments',
+                type: 'warning',
+                customClass: 'swal-wide'
+            });
+        }
+        function validateBatFile() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Error while inserting Data in Database',
+                type: 'error',
+                customClass: 'swal-wide'
+            });
+        }
+        function FileDoesnotExists() {
+            swal.fire({
+                title: 'Error!',
+                text: 'File Does not Exists',
+                type: 'error',
+                customClass: 'swal-wide'
+            });
+        }
+        function InvalidData() {
+            swal.fire({
+                title: 'Invalid Data!',
+                text: 'Please upload correct file',
+                type: 'error',
+                customClass: 'swal-wide'
+            });
+        }
+        function DuplicateData() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Data is Duplicate!!',
+                type: 'error',
+                button: "Reject",
+                customClass: 'swal-wide'
+            });
+        }
+        function SuccessUpload() {
+            swal.fire({
+                title: 'Success!',
+                text: 'File Uploaded Successfully & Pending with Checker.',
+                type: 'success',
+                customClass: 'swal-wide'
+            });
+        }
+        function InsertError() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Error while procesing the file...',
+                type: 'error',
+                customClass: 'swal-wide'
+            });
+        }
+        function ValidateColumns() {
+            swal.fire({
+                title: 'Error!',
+                text: 'Please check Columns of excel!!',
+                type: 'error',
+                customClass: 'swal-wide'
+            });
+        }
+
+//        $("[id*=chkHeader]").live("click", function () {
+//            var chkHeader = $(this);
+//            var grid = $(this).closest("table");
+//            $("input[type=checkbox]", grid).each(function () {
+//                if (chkHeader.is(":checked")) {
+//                    $(this).attr("checked", "checked");
+//                    $("td", $(this).closest("tr")).addClass("selected");
+//                } else {
+//                    $(this).removeAttr("checked");
+//                    $("td", $(this).closest("tr")).removeClass("selected");
+//                }
+//            });
+        //        });
+
+//        $(document).ready(function () {
+//            $('[id*=chkHeader]').click(function () {
+//                $('#chkRow').attr("checked",this.checked);
+//            })
+//            $('#chkRow').click(function () {
+//                if($('#chkRow').length == $('#chkRow:checked').length)
+//                {
+//                    $('#chkHeader').attr("checked","checked")
+//                }
+//                else
+//                {
+//                    $('#chkHeader').removeAttr("checked");
+//                }
+//            })
+
+//            })
+
+        $(function () {
+            $("[id*=chkHeader]").click(function () {
+                $("input[name='employeeIdsToDelete']").attr("checked", this.checked);
+
+                $("input[name='employeeIdsToDelete']").click(function () {
+                    if ($("input[name='employeeIdsToDelete']").length == $("input[name='employeeIdsToDelete']:checked").length) {
+                        $("#checkAll").attr("checked", "checked");
+                    }
+                    else {
+                        $("#checkAll").removeAttr("checked");
+                    }
+                });
+
+            });
+            $("#btnFinance").click(function () {
+                var count = $("input[name='employeeIdsToDelete']:checked").length;
+                if (count == 0) {
+                    alert("No rows selected to delete");
+                    return false;
+                }
+                else {
+                    return confirm(count + " row(s) will be deleted");
+                }
+            });
+        });  
+
+    </script>
+    <div class="panel panel-default ActualFileUploadDiv">
+        <div class="panel-body">
+            <h6>
+                Actual Revenue Data Upload</h6>
+            </br>
+            <div class="row">
+                <div class="col-md-6">
+                    <asp:Label ID="lblFromDate" runat="server" Text="From Date"></asp:Label>
+                    <asp:TextBox ID="txtFromDate" runat="server"></asp:TextBox>
+                    <asp:ImageButton ID="imgbtnFromDate" runat="server" OnClick="imgbtnFromDate_Click"
+                        ImageUrl="~/Images/calender.png" Height="25px" />
+                    <asp:Calendar ID="CalendarFromDate" runat="server" OnDayRender="CalendarFromDate_DayRender"
+                        OnSelectionChanged="CalendarFromDate_SelectionChanged"></asp:Calendar>
+                </div>
+                <div class="col-md-6">
+                    <asp:Label ID="lblToDate" runat="server" Text="To Date"></asp:Label>
+                    <asp:TextBox ID="txtToDate" runat="server"></asp:TextBox>
+                    <asp:ImageButton ID="imgbtnToDate" runat="server" OnClick="imgbtnToDate_Click" ImageUrl="~/Images/calender.png"
+                        Height="25px" />
+                    <asp:Calendar ID="CalendarToDate" runat="server" OnDayRender="CalendarToDate_DayRender"
+                        OnSelectionChanged="CalendarToDate_SelectionChanged"></asp:Calendar>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <asp:Button ID="btnGo" class="btn btn-primary" runat="server" Text="Go" OnClick="btnGo_Click"
+                        Style="font-size: small" data-backdrop="static" data-keyboard="false" />
+                </div>
+            </div>
+            </br>
+            <div class="row">
+                <div class="col-md-6">
+                    <asp:Label ID="lblProduct" runat="server" Text="Product"></asp:Label>
+                    <asp:DropDownList ID="ddlProductName" runat="server" OnSelectedIndexChanged="ddlProductName_SelectedIndexChanged"
+                        AutoPostBack="true">
+                        <asp:ListItem Text="-Select Product-" Value="-1" />
+                    </asp:DropDownList>
+                </div>
+                <div class="col-md-6">
+                    <asp:Label ID="lblSubProduct" runat="server" Text="Sub Product"></asp:Label>
+                    <asp:DropDownList ID="ddlSubProductName" runat="server" OnSelectedIndexChanged="ddlSubProductName_SelectedIndexChanged"
+                        AutoPostBack="true">
+                        <asp:ListItem Text="-Select SubProduct-" Value="-1" />
+                    </asp:DropDownList>
+                </div>
+            </div>
+            </br>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>
+                        <asp:FileUpload ID="ActualFileUpload1" runat="server" Style="font-size: small" />
+                    </h5>
+                    </br>
+                    <p>
+                        <asp:Label ID="lblmsg" runat="server" Text=""></asp:Label>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        <asp:Button ID="btnActualFileUpload" runat="server" Text="Upload Revenue Data" class="btn btn-primary"
+                            OnClick="btnActualFileUpload_Click" />
+                        &nbsp;
+                        <asp:Button ID="btnFileReUpload" runat="server" Text="Re-Upload Revenue Data" class="btn btn-primary"
+                            OnClick="btnFileReUpload_Click" />
+                    </p>
+                    <p>
+                        <asp:GridView ID="GridViewFiles" runat="server" AutoGenerateColumns="False" AllowSorting="true"
+                            AllowPaging="true" PageSize="50" OnRowCommand="GridViewFiles_RowCommand" CellPadding="4"
+                            Style="font-size: small" BackColor="White" BorderColor="#CC9966" BorderStyle="None"
+                            BorderWidth="1px">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <HeaderTemplate>
+                                        <asp:CheckBox id="checkAll" name="checkAll"  runat="server" />
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <asp:CheckBox id="employeeIdsToDelete" name="employeeIdsToDelete" runat="server" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="FileId" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblFileId" runat="server" Text='<%# Bind("PPFL_FILE_ID") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="ProductId" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblProductId" runat="server" Text='<%# Bind("PPFL_PRODUCT_ID") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Filename">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="lnkbtnFilename" runat="server" CommandArgument='<%# Eval("PPFL_FILE_NM") %>'
+                                            CommandName="Download" Text='<%# Eval("PPFL_FILE_NM") %>'></asp:LinkButton>
+                                        <%--<asp:Label ID="lblFilename" runat="server" Text='<%# Bind("PPFL_FILE_NM") %>'></asp:Label>--%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Product">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblProduct" runat="server" Text='<%# Bind("PR_PRODUCT") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Sub Product">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSubProduct" runat="server" Text='<%# Bind("PR_SUB_PRODUCT") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="From Date">
+                                    <ItemTemplate>
+                                        <%--<asp:Label ID="Label4" runat="server" Text='<%# Convert.ToDateTime(Eval("PPFL_FILE_FROM_DT")).ToString("dd/MMM/yyyy") %>'></asp:Label>--%>
+                                        <asp:Label ID="Label4" runat="server" Text='<%# Eval("PPFL_FILE_FROM_DT") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="To Date">
+                                    <ItemTemplate>
+                                        <%--<asp:Label ID="Label5" runat="server" Text='<%# Convert.ToDateTime(Eval("PPFL_FILE_TO_DT")).ToString("dd/MMM/yyyy") %>'></asp:Label>--%>
+                                        <asp:Label ID="Label5" runat="server" Text='<%# Eval("PPFL_FILE_TO_DT") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Created by" SortExpression="Created by">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblUploadBy" runat="server" Text='<%# Bind("PPFL_UPLOAD_BY") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="File Upload Date">
+                                    <ItemTemplate>
+                                        <asp:Label ID="Label8" runat="server" Text='<%# Convert.ToDateTime(Eval("PPFL_UPLOAD_FILE_DT")).ToString("dd/MMM/yyyy") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Status">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblStatus" runat="server" Text='<%# Bind("PPFL_FILE_STATUS") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Action">
+                                    <ItemTemplate>
+                                        <asp:ImageButton ID="imgbtnDelete" runat="server" CommandName="DeleteFile" CommandArgument='<%# ((GridViewRow) Container).RowIndex %>'
+                                            ImageUrl="~/Images/trash.png" />
+                                        <asp:ImageButton ID="imgReFileUpload" runat="server" CommandName="ReUpload" CommandArgument='<%# ((GridViewRow) Container).RowIndex %>'
+                                            ImageUrl="~/Images/Reupload.jpg" />
+                                    </ItemTemplate>
+                                    <ControlStyle Height="35px" Width="35px" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Action">
+                                    <ItemTemplate>
+                                        <asp:ImageButton ID="imgbtnApprove" runat="server" CommandName="Approve" CommandArgument='<%# ((GridViewRow) Container).RowIndex %>'
+                                            ImageUrl="~/Images/Approve.png" />
+                                        <asp:ImageButton ID="imgbtnReject" runat="server" CommandName="Reject" ImageUrl="~/Images/Reject.png"
+                                            CommandArgument='<%# ((GridViewRow) Container).RowIndex %>' />
+                                    </ItemTemplate>
+                                    <ControlStyle Height="35px" Width="35px" />
+                                    <ItemStyle Wrap="false" />
+                                </asp:TemplateField>
+                                <%--<asp:TemplateField HeaderText="ReAction">
+                                    <ItemTemplate>
+                                        <asp:ImageButton ID="imgReFileUpload" runat="server" CommandName="ReUpload" CommandArgument='<%# ((GridViewRow) Container).RowIndex %>'
+                                            ImageUrl="~/Images/Reupload.jpg" />
+                                    </ItemTemplate>
+                                    <ControlStyle Height="35px" Width="35px" />
+                                    <ItemStyle Wrap="false" />
+                                </asp:TemplateField>--%>
+                                <%--<asp:TemplateField HeaderText="Comments">
+                                    <ItemTemplate>
+                                        <asp:TextBox ID="txtComments" runat="server"></asp:TextBox>
+                                    </ItemTemplate>
+                                </asp:TemplateField>--%>
+                            </Columns>
+                            <FooterStyle BackColor="#97291E" ForeColor="#FFFFFF" />
+                            <HeaderStyle BackColor="#97291E" Font-Bold="True" ForeColor="#FFFFFF" />
+                            <PagerStyle BackColor="#FFFFCC" ForeColor="#330099" HorizontalAlign="Center" />
+                            <RowStyle ForeColor="#330099" BackColor="White" />
+                            <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="#663399" />
+                            <SortedAscendingCellStyle BackColor="#FEFCEB" />
+                            <SortedAscendingHeaderStyle BackColor="#AF0101" />
+                            <SortedDescendingCellStyle BackColor="#F6F0C0" />
+                            <SortedDescendingHeaderStyle BackColor="#7E0000" />
+                        </asp:GridView>
+                    </p>
+                    <p>
+                        <asp:Button ID="btnFinance" runat="server" Text="Move to Finance" class="btn btn-primary"  OnClick="btnFinance_Click"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</asp:Content>
